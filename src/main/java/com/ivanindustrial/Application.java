@@ -6,7 +6,7 @@ import com.ivanindustrial.finder.SolutionFinder;
 
 import java.util.Date;
 
-public class Main {
+public class Application {
 
     public static void main(String[] args) {
         Date init = new Date();
