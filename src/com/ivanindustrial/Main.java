@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.ivanindustrial.config.BoardConfig;
 import com.ivanindustrial.entities.BoardState;
+import com.ivanindustrial.finder.SolutionFinder;
 
 public class Main {
 

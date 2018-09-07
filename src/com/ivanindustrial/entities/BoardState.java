@@ -51,13 +51,13 @@ public class BoardState {
     }
 
     public List<Integer> getCellsWithPeg() {
-        List<Integer> cellsWtihPeg = new LinkedList<>();
+        List<Integer> cellsWithPeg = new LinkedList<>();
         for (Integer cell: cells.keySet()) {
             if (getCellState(cell)) {
-                cellsWtihPeg.add(cell);
+                cellsWithPeg.add(cell);
             }
         }
-        return cellsWtihPeg;
+        return cellsWithPeg;
     }
 
     public BoardState getCopy(String stepHistory) {
