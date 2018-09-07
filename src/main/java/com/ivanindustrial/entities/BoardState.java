@@ -17,21 +17,9 @@ public class BoardState {
         this.stepHistory = stepHistory;
     }
 
-    public static BoardState createTriangleBoard() {
-       return initBoardState(15, 1);
-    }
-
-    public static BoardState createEnglishBoard() {
-        return initBoardState(33, 17);
-    }
-
-    public static BoardState createDeutschBoard() {
-        return initBoardState(45, 23);
-    }
-
-    private static BoardState initBoardState(int count, int emptyCell) {
+    public static BoardState createBoard(int cellCount, int emptyCell) {
         HashMap<Integer, Boolean> cells = new HashMap<>();
-        for (int i = 1; i <=count; i++) {
+        for (int i = 1; i <=cellCount; i++) {
             cells.put(i, true);
         }
         cells.put(emptyCell, false);

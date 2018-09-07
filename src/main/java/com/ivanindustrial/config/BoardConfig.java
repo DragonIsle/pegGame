@@ -2,10 +2,15 @@ package com.ivanindustrial.config;
 
 import com.ivanindustrial.entities.TargetAndIntermediate;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivan Kazimirov
@@ -13,26 +18,6 @@ import java.util.List;
 public class BoardConfig {
 
     private HashMap<Integer, List<TargetAndIntermediate>> configItems;
-
-    public static BoardConfig initTriangleBoardConfig() {
-        HashMap<Integer, List<TargetAndIntermediate>> configItems = new HashMap<>();
-        configItems.put(1, createConfigForItem(Arrays.asList(4, 6), Arrays.asList(2, 3)));
-        configItems.put(2, createConfigForItem(Arrays.asList(7, 9), Arrays.asList(4, 5)));
-        configItems.put(3, createConfigForItem(Arrays.asList(8, 10), Arrays.asList(5, 6)));
-        configItems.put(4, createConfigForItem(Arrays.asList(1, 6, 11, 13), Arrays.asList(2, 5, 7, 8)));
-        configItems.put(5, createConfigForItem(Arrays.asList(12, 14), Arrays.asList(8, 9)));
-        configItems.put(6, createConfigForItem(Arrays.asList(1, 4, 13, 15), Arrays.asList(3, 5, 9, 10)));
-        configItems.put(7, createConfigForItem(Arrays.asList(2, 9), Arrays.asList(4, 8)));
-        configItems.put(8, createConfigForItem(Arrays.asList(3, 10), Arrays.asList(5, 9)));
-        configItems.put(9, createConfigForItem(Arrays.asList(2, 7), Arrays.asList(5, 8)));
-        configItems.put(10, createConfigForItem(Arrays.asList(3, 8), Arrays.asList(6, 9)));
-        configItems.put(11, createConfigForItem(Arrays.asList(4, 13), Arrays.asList(7, 12)));
-        configItems.put(12, createConfigForItem(Arrays.asList(5, 14), Arrays.asList(8, 13)));
-        configItems.put(13, createConfigForItem(Arrays.asList(4, 6, 11, 15), Arrays.asList(8, 9, 12, 14)));
-        configItems.put(14, createConfigForItem(Arrays.asList(5, 12), Arrays.asList(9, 13)));
-        configItems.put(15, createConfigForItem(Arrays.asList(6, 13), Arrays.asList(10, 14)));
-        return new BoardConfig(configItems);
-    }
 
     public static BoardConfig initEnglishBoardConfig() {
         HashMap<Integer, List<TargetAndIntermediate>> configItems = new HashMap<>();
@@ -78,11 +63,6 @@ public class BoardConfig {
         return new BoardConfig(configItems);
     }
 
-    public static BoardConfig initDeutschBoardConfig() {
-        HashMap<Integer, List<TargetAndIntermediate>>  configItems = new HashMap<>();
-        return new BoardConfig(configItems);
-    }
-
     private BoardConfig(HashMap<Integer, List<TargetAndIntermediate>> configItems) {
         this.configItems = configItems;
     }
@@ -97,5 +77,22 @@ public class BoardConfig {
             itemConfig.add(new TargetAndIntermediate(targets.get(i), intermediate.get(i)));
         }
         return itemConfig;
+    }
+
+    public static BoardConfig createConfigFromFile(String fileName) throws IOException {
+        HashMap<Integer, List<TargetAndIntermediate>>  configItems = new HashMap<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+        while (reader.ready()) {
+            String[] configItemArr = reader.readLine().split(":");
+            configItems.put(Integer.parseInt(configItemArr[0]), getPairsFromString(configItemArr[1]));
+        }
+        return new BoardConfig(configItems);
+    }
+
+    private static List<TargetAndIntermediate> getPairsFromString(String string) {
+        return Arrays.stream(string.trim().split(" ")).map(pairStr -> {
+            String[] arr = pairStr.split(",");
+            return new TargetAndIntermediate(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]));
+        }).collect(Collectors.toList());
     }
 }

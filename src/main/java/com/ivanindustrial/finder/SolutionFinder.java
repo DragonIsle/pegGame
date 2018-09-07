@@ -52,7 +52,8 @@ public class SolutionFinder {
         return !state.getCellState(targetCell) && state.getCellState(intermediateCell);
     }
 
-    private List<BoardState> getNextStatesForCell(Integer cellWithPeg, BoardState parentState, List<TargetAndIntermediate> cellConfig) {
+    private List<BoardState> getNextStatesForCell(Integer cellWithPeg,
+                                                  BoardState parentState, List<TargetAndIntermediate> cellConfig) {
         return cellConfig.stream()
                 .filter(tai -> isStepPossible(tai.getTargetCell(), tai.getIntermediateCell(), parentState))
                 .map(tai -> getNextState(parentState, cellWithPeg, tai))
