@@ -1,5 +1,8 @@
 package com.ivanindustrial.config;
 
+import com.ivanindustrial.entities.TargetAndIntermediate;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +12,10 @@ import java.util.List;
  */
 public class BoardConfig {
 
-    private HashMap<Integer, HashMap<Integer, Integer>> configItems;
+    private HashMap<Integer, List<TargetAndIntermediate>> configItems;
 
     public static BoardConfig initTriangleBoardConfig() {
-        HashMap<Integer, HashMap<Integer, Integer>> configItems = new HashMap<>();
+        HashMap<Integer, List<TargetAndIntermediate>> configItems = new HashMap<>();
         configItems.put(1, createConfigForItem(Arrays.asList(4, 6), Arrays.asList(2, 3)));
         configItems.put(2, createConfigForItem(Arrays.asList(7, 9), Arrays.asList(4, 5)));
         configItems.put(3, createConfigForItem(Arrays.asList(8, 10), Arrays.asList(5, 6)));
@@ -32,7 +35,7 @@ public class BoardConfig {
     }
 
     public static BoardConfig initEnglishBoardConfig() {
-        HashMap<Integer, HashMap<Integer, Integer>> configItems = new HashMap<>();
+        HashMap<Integer, List<TargetAndIntermediate>> configItems = new HashMap<>();
         configItems.put(1, createConfigForItem(Arrays.asList(3, 9), Arrays.asList(2, 4)));
         configItems.put(2, createConfigForItem(Arrays.asList(10), Arrays.asList(5)));
         configItems.put(3, createConfigForItem(Arrays.asList(1, 11), Arrays.asList(2, 6)));
@@ -76,22 +79,22 @@ public class BoardConfig {
     }
 
     public static BoardConfig initDeutschBoardConfig() {
-        HashMap<Integer, HashMap<Integer, Integer>> configItems = new HashMap<>();
+        HashMap<Integer, List<TargetAndIntermediate>>  configItems = new HashMap<>();
         return new BoardConfig(configItems);
     }
 
-    private BoardConfig(HashMap<Integer, HashMap<Integer, Integer>> configItems) {
+    private BoardConfig(HashMap<Integer, List<TargetAndIntermediate>> configItems) {
         this.configItems = configItems;
     }
 
-    public HashMap<Integer, Integer> getConfigForCell(Integer cellNumber) {
+    public List<TargetAndIntermediate> getConfigForCell(Integer cellNumber) {
         return configItems.get(cellNumber);
     }
 
-    private static HashMap<Integer, Integer> createConfigForItem(List<Integer> targets, List<Integer> intermediate) {
-        HashMap<Integer, Integer> itemConfig = new HashMap<>();
+    private static List<TargetAndIntermediate> createConfigForItem(List<Integer> targets, List<Integer> intermediate) {
+        List<TargetAndIntermediate> itemConfig = new ArrayList<>();
         for (int i = 0; i < targets.size(); i++) {
-            itemConfig.put(targets.get(i), intermediate.get(i));
+            itemConfig.add(new TargetAndIntermediate(targets.get(i), intermediate.get(i)));
         }
         return itemConfig;
     }

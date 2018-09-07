@@ -2,16 +2,17 @@ package com.ivanindustrial.finder;
 
 import com.ivanindustrial.config.BoardConfig;
 import com.ivanindustrial.entities.BoardState;
+import com.ivanindustrial.entities.TargetAndIntermediate;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SolutionFinder {
 
     private static final String deadEnd = "No solution has been found!";
+    private static final int pegsCountToFinishGame = 1;
+
     private BoardConfig boardConfig;
 
     public SolutionFinder(BoardConfig boardConfig) {
@@ -22,15 +23,15 @@ public class SolutionFinder {
         String result = deadEnd;
         if (checkIsGameFinished(state)) {
             result = state.getStepHistory();
-        }
-
-        List<BoardState> nextStates = getNextStates(state);
-        if (!nextStates.isEmpty()) {
-            for (BoardState nextState : nextStates) {
-                String solution = getSolution(nextState);
-                if (!solution.equals(deadEnd)) {
-                    result = solution;
-                    break;
+        } else {
+            List<BoardState> nextStates = getNextStates(state);
+            if (!nextStates.isEmpty()) {
+                for (BoardState nextState : nextStates) {
+                    String solution = getSolution(nextState);
+                    if (!solution.equals(deadEnd)) {
+                        result = solution;
+                        break;
+                    }
                 }
             }
         }
@@ -38,7 +39,7 @@ public class SolutionFinder {
     }
 
     private boolean checkIsGameFinished(BoardState state) {
-        return state.getCellsWithPeg().size() == 1 && state.getCellState(17);
+        return state.getCellsWithPeg().size() == pegsCountToFinishGame;
     }
 
     private List<BoardState> getNextStates(BoardState state) {
@@ -51,18 +52,18 @@ public class SolutionFinder {
         return !state.getCellState(targetCell) && state.getCellState(intermediateCell);
     }
 
-    private List<BoardState> getNextStatesForCell(Integer cellWithPeg, BoardState parentState, HashMap<Integer, Integer> cellConfig) {
-        return cellConfig.entrySet().stream()
-                .filter(entry -> isStepPossible(entry.getKey(), entry.getValue(), parentState))
-                .map(entry -> getNextState(parentState, Arrays.asList(cellWithPeg, entry.getKey(), entry.getValue())))
+    private List<BoardState> getNextStatesForCell(Integer cellWithPeg, BoardState parentState, List<TargetAndIntermediate> cellConfig) {
+        return cellConfig.stream()
+                .filter(tai -> isStepPossible(tai.getTargetCell(), tai.getIntermediateCell(), parentState))
+                .map(tai -> getNextState(parentState, cellWithPeg, tai))
                 .collect(Collectors.toList());
     }
 
-    private BoardState getNextState(BoardState parentState, List<Integer> cellsToInverse) {
-        BoardState nextState = parentState.getCopy(cellsToInverse.get(0) + "-" + cellsToInverse.get(1) + " ");
-        for (Integer cell: cellsToInverse) {
-            nextState.setCellState(cell, !parentState.getCellState(cell));
-        }
+    private BoardState getNextState(BoardState parentState, Integer cellWithPeg, TargetAndIntermediate tai) {
+        BoardState nextState = parentState.getCopy(cellWithPeg + "-" + tai.getTargetCell() + " ");
+        nextState.setCellState(cellWithPeg, false);
+        nextState.setCellState(tai.getTargetCell(), true);
+        nextState.setCellState(tai.getIntermediateCell(), false);
         return nextState;
     }
 }
