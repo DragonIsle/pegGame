@@ -7,7 +7,7 @@ import com.ivanindustrial.finder.SolutionFinder;
 import java.io.IOException;
 import java.util.Date;
 
-public class Main {
+public class Application {
 
     // TODO: make file path relative
     private static String filePath = "/home/saul/IdeaProjects/pegGame/src/main/resources/board.configs/";
