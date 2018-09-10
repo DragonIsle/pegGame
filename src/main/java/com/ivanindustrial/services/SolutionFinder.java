@@ -1,4 +1,4 @@
-package com.ivanindustrial.finder;
+package com.ivanindustrial.services;
 
 import com.ivanindustrial.config.BoardConfig;
 import com.ivanindustrial.entities.BoardState;
