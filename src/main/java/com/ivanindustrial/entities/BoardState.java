@@ -17,13 +17,13 @@ public class BoardState {
         this.stepHistory = stepHistory;
     }
 
-    public static BoardState createBoard(int cellCount, int emptyCell) {
-        HashMap<Integer, Boolean> cells = new HashMap<>();
+    public BoardState(int cellCount, int emptyCell) {
+        this.cells = new HashMap<>();
         for (int i = 1; i <=cellCount; i++) {
             cells.put(i, true);
         }
         cells.put(emptyCell, false);
-        return new BoardState(cells, "");
+        this.stepHistory = "";
     }
 
     public Boolean getCellState(Integer cellNumber) {

@@ -6,6 +6,8 @@ import com.ivanindustrial.entities.BoardType;
 import com.ivanindustrial.services.SolutionFinderService;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +17,8 @@ import java.io.IOException;
 @RestController
 public class SolutionController {
 
-    @Value( "${config.path}" )
-    private String configFilesPath;
+    @Value("${board.config.path}")
+    private String configsPath;
 
     private SolutionFinderService solutionFinderService;
 
@@ -26,20 +28,8 @@ public class SolutionController {
 
     @RequestMapping("/solution")
     public String getSolution(@RequestParam(defaultValue = "TRIANGLE") BoardType boardType) throws IOException {
-        solutionFinderService.setBoardConfig(BoardConfig.createConfigFromFile(configFilesPath + boardType.name().toLowerCase()));
-        return solutionFinderService.getSolution(getBoardStateByType(boardType));
-    }
-
-    private BoardState getBoardStateByType(BoardType type) {
-        BoardState state;
-        switch (type) {
-            case ENGLISH:
-                state = BoardState.createBoard(33, 17);
-                break;
-            default:
-                state = BoardState.createBoard(15, 1);
-                break;
-        }
-        return state;
+        Resource resource = new ClassPathResource(configsPath + boardType.name().toLowerCase());
+        solutionFinderService.setBoardConfig(new BoardConfig(resource.getFile()));
+        return solutionFinderService.getSolution(new BoardState(boardType.getCellCount(), boardType.getEmptyCell()));
     }
 }

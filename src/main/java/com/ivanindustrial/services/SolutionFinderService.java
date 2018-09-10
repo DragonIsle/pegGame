@@ -22,7 +22,7 @@ public class SolutionFinderService {
     public String getSolution(BoardState state) {
         String result = deadEnd;
         if (checkIsGameFinished(state)) {
-            result = state.getStepHistory();
+            result = state.getStepHistory().trim();
         } else {
             List<BoardState> nextStates = getNextStates(state);
             if (!nextStates.isEmpty()) {
