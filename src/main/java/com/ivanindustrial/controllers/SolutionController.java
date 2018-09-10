@@ -3,7 +3,8 @@ package com.ivanindustrial.controllers;
 import com.ivanindustrial.config.BoardConfig;
 import com.ivanindustrial.entities.BoardState;
 import com.ivanindustrial.entities.BoardType;
-import com.ivanindustrial.services.SolutionFinder;
+import com.ivanindustrial.services.SolutionFinderService;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,11 +18,16 @@ public class SolutionController {
     @Value( "${config.path}" )
     private String configFilesPath;
 
+    private SolutionFinderService solutionFinderService;
+
+    public SolutionController(SolutionFinderService solutionFinderService) {
+        this.solutionFinderService = solutionFinderService;
+    }
+
     @RequestMapping("/solution")
     public String getSolution(@RequestParam(defaultValue = "TRIANGLE") BoardType boardType) throws IOException {
-        SolutionFinder finder = new SolutionFinder(
-                BoardConfig.createConfigFromFile(configFilesPath + boardType.name().toLowerCase()));
-        return finder.getSolution(getBoardStateByType(boardType));
+        solutionFinderService.setBoardConfig(BoardConfig.createConfigFromFile(configFilesPath + boardType.name().toLowerCase()));
+        return solutionFinderService.getSolution(getBoardStateByType(boardType));
     }
 
     private BoardState getBoardStateByType(BoardType type) {

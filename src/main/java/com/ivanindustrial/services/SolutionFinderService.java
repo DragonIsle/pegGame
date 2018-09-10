@@ -8,16 +8,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SolutionFinder {
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-    private static final String deadEnd = "No solution has been found!";
-    private static final int pegsCountToFinishGame = 1;
+@Service
+public class SolutionFinderService {
+
+    @Value( "${deadend}" )
+    private String deadEnd = "";
 
     private BoardConfig boardConfig;
-
-    public SolutionFinder(BoardConfig boardConfig) {
-        this.boardConfig = boardConfig;
-    }
 
     public String getSolution(BoardState state) {
         String result = deadEnd;
@@ -39,7 +39,7 @@ public class SolutionFinder {
     }
 
     private boolean checkIsGameFinished(BoardState state) {
-        return state.getCellsWithPeg().size() == pegsCountToFinishGame;
+        return state.getCellsWithPeg().size() == 1;
     }
 
     private List<BoardState> getNextStates(BoardState state) {
@@ -66,5 +66,9 @@ public class SolutionFinder {
         nextState.setCellState(tai.getTargetCell(), true);
         nextState.setCellState(tai.getIntermediateCell(), false);
         return nextState;
+    }
+
+    public void setBoardConfig(BoardConfig boardConfig) {
+        this.boardConfig = boardConfig;
     }
 }
