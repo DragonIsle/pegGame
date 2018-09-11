@@ -1,6 +1,6 @@
 function findSolution(boardType) {
     setSolutionString("This may take some time. Please wait...");
-    $.post("/solution", { boardType: boardType },
+    $.post("/solution", { boardType: boardType.toUpperCase() },
         function (data) {
             setSolutionString(data);
         }, 'text');

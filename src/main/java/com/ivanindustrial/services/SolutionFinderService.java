@@ -21,7 +21,7 @@ public class SolutionFinderService {
 
     public String getSolution(BoardState state) {
         String result = deadEnd;
-        if (checkIsGameFinished(state)) {
+        if (checkIsOnePegLeft(state)) {
             result = state.getStepHistory().trim();
         } else {
             List<BoardState> nextStates = getNextStates(state);
@@ -38,7 +38,7 @@ public class SolutionFinderService {
         return result;
     }
 
-    private boolean checkIsGameFinished(BoardState state) {
+    private boolean checkIsOnePegLeft(BoardState state) {
         return state.getCellsWithPeg().size() == 1;
     }
 
