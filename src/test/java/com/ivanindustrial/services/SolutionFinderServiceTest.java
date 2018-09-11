@@ -59,8 +59,8 @@ public class SolutionFinderServiceTest {
     @Test
     public void testSolutionFinderService() throws IOException {
         Resource resource = new ClassPathResource(configsPath + boardType.name().toLowerCase());
-        solutionFinderService.setBoardConfig(new BoardConfig(resource.getFile()));
-        assertEquals(expectedResult, solutionFinderService.getSolution(
-                new BoardState(boardType.getCellCount(), boardType.getEmptyCell())));
+        assertEquals(expectedResult, solutionFinderService.findSolution(
+                new BoardState(boardType.getCellCount(), boardType.getEmptyCell()),
+                new BoardConfig(resource.getFile())));
     }
 }

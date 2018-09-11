@@ -29,7 +29,7 @@ public class SolutionController {
     @RequestMapping("/solution")
     public String getSolution(@RequestParam(defaultValue = "TRIANGLE") BoardType boardType) throws IOException {
         Resource resource = new ClassPathResource(configsPath + boardType.name().toLowerCase());
-        solutionFinderService.setBoardConfig(new BoardConfig(resource.getFile()));
-        return solutionFinderService.getSolution(new BoardState(boardType.getCellCount(), boardType.getEmptyCell()));
+        return solutionFinderService.findSolution(new BoardState(boardType.getCellCount(), boardType.getEmptyCell()),
+                new BoardConfig(resource.getFile()));
     }
 }
