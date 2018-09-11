@@ -48,7 +48,7 @@ public class BoardState {
         return cellsWithPeg;
     }
 
-    public BoardState getCopy(String stepHistory) {
+    public BoardState makeStep(String stepHistory) {
         return new BoardState((HashMap<Integer, Boolean>)cells.clone(), this.stepHistory + stepHistory);
     }
 }
