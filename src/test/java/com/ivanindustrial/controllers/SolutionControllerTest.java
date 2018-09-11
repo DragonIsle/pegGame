@@ -1,4 +1,4 @@
-package com.ivanindustrial.services;
+package com.ivanindustrial.controllers;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,34 +10,38 @@ import java.util.Collection;
 import java.util.List;
 
 import com.ivanindustrial.entities.BoardType;
-import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.ivanindustrial.config.BoardConfig;
-import com.ivanindustrial.entities.BoardState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 /**
  * @author Ivan Kazimirov
  */
 @RunWith(Parameterized.class)
-public class SolutionFinderServiceTest {
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class SolutionControllerTest {
+
+    @ClassRule
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule SPRING_METHOD_RULE = new SpringMethodRule();
+
+    @Autowired
+    private SolutionController controller;
 
     private BoardType boardType;
     private String expectedResult;
-    private SolutionFinderService solutionFinderService;
 
-    private static String configsPath = "board/configs/";
-
-    @Before
-    public void initialize() {
-        solutionFinderService = new SolutionFinderService();
-    }
-
-    public SolutionFinderServiceTest(BoardType boardType, String expectedResult) {
+    public SolutionControllerTest(BoardType boardType, String expectedResult) {
         this.boardType = boardType;
         this.expectedResult = expectedResult;
     }
@@ -57,10 +61,7 @@ public class SolutionFinderServiceTest {
     }
 
     @Test
-    public void testSolutionFinderService() throws IOException {
-        Resource resource = new ClassPathResource(configsPath + boardType.name().toLowerCase());
-        assertEquals(expectedResult, solutionFinderService.findSolution(
-                new BoardState(boardType.getCellCount(), boardType.getEmptyCell()),
-                new BoardConfig(resource.getFile())));
+    public void testSolutionController() throws IOException {
+        assertEquals(expectedResult, controller.getSolution(boardType));
     }
 }
