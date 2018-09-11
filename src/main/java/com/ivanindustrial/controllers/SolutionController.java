@@ -3,6 +3,7 @@ package com.ivanindustrial.controllers;
 import com.ivanindustrial.config.BoardConfig;
 import com.ivanindustrial.entities.BoardState;
 import com.ivanindustrial.entities.BoardType;
+import com.ivanindustrial.services.SolutionFinder;
 import com.ivanindustrial.services.SolutionFinderService;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,5 +32,6 @@ public class SolutionController {
         Resource resource = new ClassPathResource(configsPath + boardType.name().toLowerCase());
         return solutionFinderService.findSolution(new BoardState(boardType.getCellCount(), boardType.getEmptyCell()),
                 new BoardConfig(resource.getFile()));
+//        return new SolutionFinder(new BoardConfig(resource.getFile())).getSolution(new BoardState(boardType.getCellCount(), boardType.getEmptyCell()));
     }
 }
