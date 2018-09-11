@@ -2,9 +2,9 @@ package com.ivanindustrial.services;
 
 import com.ivanindustrial.config.BoardConfig;
 import com.ivanindustrial.entities.BoardState;
-import com.ivanindustrial.entities.TargetAndIntermediate;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +42,7 @@ public class SolutionFinderService {
 
     private List<BoardState> getNextStates(BoardState state, BoardConfig config) {
         return state.getCellsWithPeg().stream()
-                .map(cellWithPeg -> getNextStatesForCell(cellWithPeg, state, config.getConfigForCell(cellWithPeg)))
+                .map(cellWithPeg -> getNextStatesForCell(cellWithPeg, state, config.getCellConfig(cellWithPeg)))
                 .flatMap(Collection::stream).collect(Collectors.toList());
     }
 
@@ -50,19 +50,18 @@ public class SolutionFinderService {
         return !state.getCellState(targetCell) && state.getCellState(intermediateCell);
     }
 
-    private List<BoardState> getNextStatesForCell(Integer cellWithPeg,
-                                                  BoardState parentState, List<TargetAndIntermediate> cellConfig) {
-        return cellConfig.stream()
-                .filter(tai -> isStepPossible(tai.getTargetCell(), tai.getIntermediateCell(), parentState))
-                .map(tai -> getNextState(parentState, cellWithPeg, tai))
+    private List<BoardState> getNextStatesForCell(Integer cellWithPeg, BoardState parentState, HashMap<Integer, Integer> cellConfig) {
+        return cellConfig.entrySet().stream()
+                .filter(entry -> isStepPossible(entry.getKey(), entry.getValue(), parentState))
+                .map(entry -> getNextState(parentState, cellWithPeg, entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
-    private BoardState getNextState(BoardState parentState, Integer cellWithPeg, TargetAndIntermediate tai) {
-        BoardState nextState = parentState.getCopy(cellWithPeg + "-" + tai.getTargetCell() + " ");
+    private BoardState getNextState(BoardState parentState, Integer cellWithPeg, Integer targetCell, Integer intermediateCell) {
+        BoardState nextState = parentState.makeStep(cellWithPeg + "-" + targetCell + " ");
         nextState.setCellState(cellWithPeg, false);
-        nextState.setCellState(tai.getTargetCell(), true);
-        nextState.setCellState(tai.getIntermediateCell(), false);
+        nextState.setCellState(targetCell, true);
+        nextState.setCellState(intermediateCell, false);
         return nextState;
     }
 }
