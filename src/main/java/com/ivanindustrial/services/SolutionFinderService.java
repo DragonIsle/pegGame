@@ -17,17 +17,15 @@ public class SolutionFinderService {
     @Value( "${deadend}" )
     private String deadEnd = "";
 
-    private BoardConfig boardConfig;
-
-    public String getSolution(BoardState state) {
+    public String findSolution(BoardState state, BoardConfig config) {
         String result = deadEnd;
         if (checkIsGameFinished(state)) {
             result = state.getStepHistory().trim();
         } else {
-            List<BoardState> nextStates = getNextStates(state);
+            List<BoardState> nextStates = getNextStates(state, config);
             if (!nextStates.isEmpty()) {
                 for (BoardState nextState : nextStates) {
-                    String solution = getSolution(nextState);
+                    String solution = findSolution(nextState, config);
                     if (!solution.equals(deadEnd)) {
                         result = solution;
                         break;
@@ -42,9 +40,9 @@ public class SolutionFinderService {
         return state.getCellsWithPeg().size() == 1;
     }
 
-    private List<BoardState> getNextStates(BoardState state) {
+    private List<BoardState> getNextStates(BoardState state, BoardConfig config) {
         return state.getCellsWithPeg().stream()
-                .map(cellWithPeg -> getNextStatesForCell(cellWithPeg, state, boardConfig.getConfigForCell(cellWithPeg)))
+                .map(cellWithPeg -> getNextStatesForCell(cellWithPeg, state, config.getConfigForCell(cellWithPeg)))
                 .flatMap(Collection::stream).collect(Collectors.toList());
     }
 
@@ -66,9 +64,5 @@ public class SolutionFinderService {
         nextState.setCellState(tai.getTargetCell(), true);
         nextState.setCellState(tai.getIntermediateCell(), false);
         return nextState;
-    }
-
-    public void setBoardConfig(BoardConfig boardConfig) {
-        this.boardConfig = boardConfig;
     }
 }
