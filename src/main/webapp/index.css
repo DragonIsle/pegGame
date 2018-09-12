@@ -1,7 +1,9 @@
 body {
+    background: url("images/background.jpg") no-repeat;
     text-align: center;
 }
 button {
+    background-color: transparent;
     height: 100px;
     border-width: 0;
     cursor: pointer;

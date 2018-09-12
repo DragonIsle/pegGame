@@ -1,7 +1,7 @@
 package com.ivanindustrial.entities;
 
 public enum BoardType {
-    ENGLISH(33, 17), GERMAN(45, 23), TRIANGLE(15, 1);
+    ENGLISH(33, 17), TRIANGLE(15, 1);
 
     private Integer cellCount;
     private Integer emptyCell;
